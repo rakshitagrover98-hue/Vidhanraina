@@ -662,7 +662,10 @@ function mark(){var bad=missing();F.forEach(function(f){var e=el(f[0]);if(e)e.se
 function setLink(a,url){if(url){a.setAttribute("href",url);a.removeAttribute("aria-disabled")}else{a.removeAttribute("href");a.setAttribute("aria-disabled","true")}}
 function refresh(){
  var ok=missing().length===0,t=text();
- setLink(ml,ok?"https://mail.google.com/mail/?view=cm&fs=1&to="+MAIL+"&su="+encodeURIComponent("Booking enquiry"+(val("q-date")?" - "+fdate(val("q-date")):""))+"&body="+encodeURIComponent(t):"");
+ var su="Booking enquiry"+(val("q-date")?" - "+fdate(val("q-date")):""),web="https://mail.google.com/mail/?view=cm&fs=1&to="+MAIL+"&su="+encodeURIComponent(su)+"&body="+encodeURIComponent(t),ua=navigator.userAgent||"",mu="";
+ if(/Android/i.test(ua))mu="intent://"+MAIL+"?subject="+encodeURIComponent(su)+"&body="+encodeURIComponent(t)+"#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url="+encodeURIComponent(web)+";end";
+ else if(/iPhone|iPad|iPod/i.test(ua))mu="googlegmail:///co?to="+MAIL+"&subject="+encodeURIComponent(su)+"&body="+encodeURIComponent(t);
+ setLink(ml,ok?(mu||web):"");
  setLink(wa,ok?"https://wa.me/"+WA+"?text="+encodeURIComponent(t):"");
 }
 function warn(){var bad=mark();msg.className="enq-msg err";msg.textContent="Please fill in: "+bad.join(", ")+".";var first=document.querySelector('.enq [aria-invalid="true"]');if(first)try{first.focus()}catch(x){}}
